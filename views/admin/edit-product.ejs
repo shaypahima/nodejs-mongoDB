@@ -1,0 +1,33 @@
+<%- include('../includes/head.ejs') %>
+<link rel="stylesheet" href="/css/forms.css">
+</head>
+
+<body>
+  <%- include('../includes/navigation.ejs') %>
+   <main>
+    <div class="product-form-container">
+      <h2>Add New Product</h2>
+      <form id="productForm" action="/admin/<% if (editing) { %>edit-product<% } else { %>add-product<% } %>" method="POST">
+
+          <label for="title">Title:</label>
+          <input type="text" name="title" id="productName" value="<% if (editing) { %><%= product.title %><% } %>" required>
+          
+          <label for="imageUrl">Image URL:</label>
+          <input type="text" name="imageUrl" value="<% if (editing) { %><%= product.imageUrl %><% } %>" id="productImage" required>
+          
+          <label for="price">Price:</label>
+          <input type="number" name="price" id="productPrice" required step="0.01" value="<% if (editing) { %><%= product.price %><% } %>">
+
+          <label for="description">Description:</label>
+          <textarea name="description" id="productDescription" rows="5" required><% if (editing) { %><%= product.description %><% } %></textarea>
+          
+          <% if (editing) { %>
+            <input type="hidden" value="<%= product.id %>" name="productId">
+          <% } %>
+          <button type="submit"><% if (editing) { %>Update Product<% } else { %>Add Product<% } %></button>
+      </form>
+  </div>
+
+   </main>
+  <!-- <script src="/js/form.js"></script> -->
+  <%- include('../includes/end.ejs') %>

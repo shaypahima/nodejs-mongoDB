@@ -1,0 +1,40 @@
+<%- include('../includes/head.ejs') %>
+<link rel="stylesheet" href="/css/cart.css">
+</head>
+<!-- order:{products,createdAt,totalPrice} -->
+<body>
+    <%- include('../includes/navigation.ejs') %>
+    <main>
+      <h1>Order Summary:</h1>
+      <% if (order.products.length > 0) { %>
+      <div class="cart-container" id="cartContainer">
+        <% order.products.forEach(product => { %>
+          <div class="cart-item">
+            <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
+            <div>
+              <h4><%= product.title %></h4>
+            </div>
+                <p>Price: $<%= product.price.toFixed(2) %></p>
+                <p>Quantity:  <%= product.orderItem.quantity %></p>
+                <p>$<%= (product.price * product.orderItem.quantity).toFixed(2) %></p>
+          </div>
+          <% }) %>
+      </div>
+      <div class="cart-summary">
+          <p id="totalPrice">
+            Total Price: $<%= order.totalPrice.toFixed(2) %>
+          </p>
+          <p>
+            Created At: <%= order.createdAt %>
+          </p>
+            <div>
+              <div class="checkout-actions">
+                <a class="btn" href="/orders" class="back-link">Back to Orders</a>
+              </div>
+          </div>
+      </div>
+      <% } else { %>
+        <h1>Order is not exist!</h1>
+    <% } %>
+    </main>
+  <%- include('../includes/end.ejs') %>

@@ -1,0 +1,41 @@
+<%- include('../includes/head.ejs') %>
+<link rel="stylesheet" href="/css/cart.css">
+</head>
+
+<body>
+    <%- include('../includes/navigation.ejs') %>
+    <main>
+      <h1>Checkout Summary:</h1>
+      <% if (products.length > 0) { %>
+      <div class="cart-container" id="cartContainer">
+        <% products.forEach(product => { %>
+          <div class="cart-item">
+            <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
+            <div>
+                <h4><%= product.title %></h4>
+                <p>Price: $<%= product.price.toFixed(2) %> x <%= product.cartItem.quantity %></p>
+            </div>
+            <p>$<%= (product.price * product.cartItem.quantity).toFixed(2) %></p>
+          </div>
+          <% }) %>
+      </div>
+      <div class="cart-summary">
+          <p id="totalPrice">Total Price: $<%= 
+            products.reduce((acc,cur) => acc + cur.price * cur.cartItem.quantity ,0).toFixed(2)
+             %></p>
+            <div>
+              <div class="checkout-actions">
+                <%- include('../includes/post-req-btn.ejs', {  
+                  payload: products,
+                  action:"/create-order",
+                  button:"Create Order"
+                }) %>
+                <a class="btn" href="/" class="back-link">Back to Products</a>
+              </div>
+          </div>
+      </div>
+      <% } else { %>
+        <h1>No Products in Cart!</h1>
+    <% } %>
+    </main>
+  <%- include('../includes/end.ejs') %>

@@ -1,0 +1,24 @@
+{
+  "name": "nodejs_sequelize",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js",
+    "start-server": "node app.js"
+  },
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "description": "become better at sequelize",
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.1",
+    "express-handlebars": "^8.0.1",
+    "mongodb": "^6.10.0",
+    "mysql2": "^3.11.4",
+    "sequelize": "^6.37.5"
+  }
+}
