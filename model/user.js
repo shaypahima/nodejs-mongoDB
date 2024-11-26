@@ -1,102 +1,67 @@
-import { ObjectId } from "mongodb";
-import { getUserCollection } from "../util/database.js";
-import Product from "./product.js";
+import { model, Schema, Types } from "mongoose";
 
-//user:
-// {
-//  _id: objectId(string)
-//  email: string
-//  name: string
-//  cart:[{ _id: objectId(string),quantity: int }...]
-// }
-//
-
-class User {
-  constructor(email, name) {
-    this.email = email
-    this.name = name
-    this.cart = []
-
-  }
-  async create() {
-    try {
-      await getUserCollection().insertOne(this)
-      console.log('user created!');
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  static async getUserCart(id) {
-    try {
-      const user = await this.findByPk(id)
-      const cart = []
-      const pushToCart = async (cartItem) => {
-        const id = cartItem._id.toString()
-        const { quantity } = cartItem
-        const { title, price, description, imageUrl } = await Product.findByPk(id)
-        const cartObj = { id, title, price:+price, description, imageUrl, quantity }
-        console.log(cartObj);
-        cart.push(cartObj)
+const userSchema = new Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true
+  },
+  cart: {
+    cartItems: [
+      {
+        productId: { type: Types.ObjectId, ref: 'Product', required: true },
+        quantity: { type: Number, required: true }
       }
-      for (let cartItem of user.cart) {
-        await pushToCart(cartItem)
-      }
-      return cart
-    } catch (error) {
-      console.log(error);
-    }
-
-
+    ]
   }
+})
 
-  static async addProductToUserCart(userId, prodId) {
-    let update;
-    let query = {
-      "_id": userId,
-      "cart._id": prodId,
-    }
-    try {
-      const user = await getUserCollection().findOne(query)
 
-      if (!user) {
-        query = { "_id": userId }
-        update = {
-          $push: {
-            cart: {
-              "_id": prodId,
-              "quantity": 1
-            }
-          }
-        }
-      } else {
 
-        update = {
-          $inc: { "cart.$.quantity": 1 }
-
-        }
-      }
-      await getUserCollection().updateOne(query, update)
-
-    } catch (error) {
-      console.log(error);
-    }
+userSchema.methods.addToCart = function (productId) {
+  const cartProductIndex = this.cart.cartItems
+    .findIndex(item => item.productId.toString() === productId)
+  const updatedCart = { ...this.cart }
+  if (cartProductIndex >= 0) {
+    updatedCart.cartItems[cartProductIndex].quantity++
+  } else {
+    updatedCart.cartItems.push({
+      productId,
+      quantity: 1
+    })
   }
-
-
-  static async findByPk(id) {
-    try {
-      let _id = id
-      if (!(id instanceof ObjectId)) {
-        _id = ObjectId.createFromHexString(id)
-      }
-      const user = await getUserCollection().findOne({ _id })
-      return user
-
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
+  this.cart = updatedCart
+  return this.save()
 }
+
+userSchema.methods.getCartItems = async function () {
+  const cart = await this.cart.populate('cartItems.productId')
+  const products = cart.cartItems.map(item => {
+    return {
+      ...item.productId.toObject(),
+      id: item.productId._id,
+      quantity: item.quantity,
+    }
+
+  })
+  return products
+}
+userSchema.methods.deleteCartItem = function (productId) {
+  const cartProductIndex = this.cart.cartItems
+    .findIndex(item => item.productId.toString() === productId)
+  if (cartProductIndex >= 0) {
+    console.log(cartProductIndex);
+    const updatedCart = { ...this.cart }
+    updatedCart.cartItems.splice(cartProductIndex, 1)
+    this.cart = updatedCart
+  }
+  return this.save()
+}
+
+
+const User = model('User', userSchema)
 
 export default User

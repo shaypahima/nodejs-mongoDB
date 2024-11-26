@@ -4,8 +4,8 @@ import 'dotenv/config'
 
 import express from 'express';
 import bodyParser from 'body-parser';
+import mongoose from 'mongoose';
 
-import {mongoConnect} from './util/database.js';
 import User from './model/user.js';
 
 
@@ -17,7 +17,6 @@ const __dirname = path.dirname(__filename);
 import adminRoutes from './routes/adminRoutes.js'
 import shopRoutes from './routes/shopRoutes.js'
 import { get404 } from './controller/errorController.js';
-import { ObjectId } from 'mongodb';
 
 const app = express();
 
@@ -29,9 +28,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(async (req, res, next) => {
   try {
-    const user = await User.findByPk('673f8b100f44afd5d814a7d9')
+    const user = await User.findById('67439fe477fd72b5dd92b83d')
+    req.user = user
     // const cart = await user.getCart()
-    req.userId = user._id
 
     // req.cart = cart
 
@@ -47,6 +46,28 @@ app.use(shopRoutes);
 app.use(get404)
 
 
-mongoConnect(()=>{
-  app.listen(3000, () => console.log('Server started on port 3000'))
-})
+const start = async () => {
+  try {
+    await mongoose.connect(process.env.DATABASE_URI)
+    console.log('Connected to DB server successfully!');
+    const user = await User.findOne()
+    if(!user){
+      await User.create({
+        name:'Bill Gates',
+        email:'billy@gmail.com',
+        cart:{
+          cartItem:[]
+        }
+      })
+      console.log('User created!');
+    }else{
+      console.log('User already exist!');
+    }
+    app.listen(3000, () => console.log('Server started on port 3000'))
+    
+  } catch (error) {
+    console.log(error);
+  }
+}
+await start()
+

@@ -1,85 +1,29 @@
-import { ObjectId } from "mongodb";
-import { getProductCollection } from "../util/database.js";
-import User from "./user.js";
+import { model, Schema, Types } from "mongoose";
 
-
-class Product {
-  constructor(title, price, description, imageUrl, userId) {
-    this.title = title;
-    this.price = +price;
-    this.description = description;
-    this.imageUrl = imageUrl;
-    this.userId = userId
+const productSchema = new Schema({
+  title: {
+    type: String,
+    required:true,
+  },
+  description: {
+    type: String,
+    required:true
+  },
+  imageUrl: {
+    type: String,
+    required:true
+  },
+  price: {
+    type: Number,
+    required:true
+  },
+  userId:{
+    type: Types.ObjectId,
+    ref: 'User',
+    required:true
   }
+})
 
-
-  async create() {
-    try {
-      await getProductCollection().insertOne(this)
-      console.log('Product saved');
-
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  static async find(query) {
-    try {
-      const products = await getProductCollection().find(query).toArray()
-      return products
-    } catch (error) {
-      console.log(error);
-
-    }
-  }
-
-  static async findAll() {
-    try {
-      const products = await this.find({})
-      return products
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  static async findByPk(id) {
-    try {
-
-      const product = await getProductCollection().findOne({
-        _id: ObjectId.createFromHexString(id)
-      })
-      return product
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async replaceOne(id) {
-    try {
-
-      const objectId = ObjectId.createFromHexString(id)
-
-      await getProductCollection().replaceOne({ _id: objectId }, this)
-
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  static async deleteOne(id) {
-    try {
-      const objectId = ObjectId.createFromHexString(id)
-      await getProductCollection().deleteOne({ _id: objectId })
-
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async addToCart(userId){  
-    User.findByPk(userId)
-  }
-}
+const Product = model('Product', productSchema)
 
 export default Product
-

@@ -4,7 +4,9 @@ import User from "../model/user.js";
 
 
 export const getIndex = async (req, res) => {
-  const products = await Product.findAll()
+
+  // console.log((await req.user.cart.populate('cartItems.productId')));
+  const products = await Product.find({})
   products.forEach(prod => {
     prod.id = prod._id.toString()
   });
@@ -17,7 +19,7 @@ export const getIndex = async (req, res) => {
 }
 
 export const getProducts = async (req, res) => {
-  const products = await Product.findAll()
+  const products = await Product.find({})
   products.forEach(prod => {
     prod.id = prod._id.toString()
   });
@@ -32,7 +34,7 @@ export const getProducts = async (req, res) => {
 export const getProduct = async (req, res) => {
   const { productId } = req.params;
   try {
-    const product = await Product.findByPk(productId)
+    const product = await Product.findById(productId)
     product.id = productId
     res.render('shop/product-detail', {
       product: product,
@@ -46,8 +48,9 @@ export const getProduct = async (req, res) => {
 
 export const getCart = async (req, res) => {
   try {
-    const products = await User.getUserCart(req.userId)
-    console.log("products: ", products);
+
+    const products = await req.user.getCartItems()
+
     res.render('shop/cart', {
       pageTitle: 'Shopping Cart',
       path: '/cart',
@@ -60,10 +63,9 @@ export const getCart = async (req, res) => {
 
 export const postCart = async (req, res) => {
   try {
-    const { payload: productId } = req.body;
-    const objProductId = ObjectId.createFromHexString(productId)
-    const objUserId = req.userId
-    await User.addProductToUserCart(objUserId, objProductId)
+    const { payload } = req.body;
+    await req.user.addToCart(payload)
+    res.redirect('/cart')
   
   } catch (error) {
     console.log(error);
@@ -72,11 +74,10 @@ export const postCart = async (req, res) => {
 
 
 export const postCartDeleteProduct = async (req, res) => {
-  const { payload: productId } = req.body;
-  const { cart } = req
   try {
-    const [product] = await cart.getProducts({ where: { id: productId } })
-    await cart.removeProduct(product)
+    const { payload } = req.body;
+    console.log(req.body);
+    await req.user.deleteCartItem(payload)
     res.redirect('/cart')
 
   } catch (error) {

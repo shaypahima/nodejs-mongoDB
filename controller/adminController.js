@@ -1,14 +1,11 @@
-
 import { ObjectId } from "mongodb";
 import Product from "../model/product.js";
-
 
 
 export const getProducts = async (req, res, next) => {
   try {
 
-    const query = { userId: req.userId }
-    const products = await Product.find(query)
+    const products = await Product.find({userId: req.user})
     products.forEach(prod => {
       prod.id = prod._id.toString()
     });
@@ -35,8 +32,9 @@ export const getAddProduct = async (req, res) => {
 export const postAddProduct = async (req, res) => {
   try {
     const { title, imageUrl, price, description } = req.body
-    const product = new Product(title, price, description, imageUrl, req.userId)
-    await product.create()
+    await Product.create({
+      title, imageUrl, price, description, userId: req.user
+    })
 
     res.redirect('/')
   } catch (error) {
@@ -50,10 +48,11 @@ export const getEditProduct = async (req, res) => {
     return res.redirect('/');
   }
   const { productId } = req.params;
+  const ProductObjId = ObjectId.createFromHexString(productId)
 
   try {
-    const product = await Product.findByPk(productId)
-    product.id = product._id.toString()
+    const product = await Product.findById(ProductObjId)
+    product.id = productId
 
     res.render('admin/edit-product', {
       pageTitle: 'Edit Product',
@@ -68,14 +67,16 @@ export const getEditProduct = async (req, res) => {
 
 export const postEditProduct = async (req, res) => {
   const { productId } = req.body;
-  const updatedTitle = req.body.title;
-  const updatedPrice = req.body.price;
-  const updatedImageUrl = req.body.imageUrl;
-  const updatedDesc = req.body.description;
+  const ProductObjId = ObjectId.createFromHexString(productId)
 
+  const update = {
+    title: req.body.title,
+    price: req.body.price,
+    imageUrl: req.body.imageUrl,
+    description: req.body.description
+  }
   try {
-    const product = new Product(updatedTitle, updatedPrice, updatedDesc, updatedImageUrl)
-    await product.replaceOne(productId)
+    await Product.findByIdAndUpdate(ProductObjId, update)
 
     res.redirect('/admin/products');
   } catch (error) {
@@ -87,7 +88,11 @@ export const postEditProduct = async (req, res) => {
 export const postDeleteProduct = async (req, res) => {
   try {
     const { payload: productId } = req.body
-    Product.deleteOne(productId)
+    const ProductObjId = ObjectId.createFromHexString(productId)
+
+    await req.user.deleteCartItem(productId)
+    await Product.findByIdAndDelete(ProductObjId)
+    
     res.redirect('/')
 
   } catch (error) {
