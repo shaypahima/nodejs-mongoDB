@@ -30,9 +30,6 @@ app.use(async (req, res, next) => {
   try {
     const user = await User.findById('67439fe477fd72b5dd92b83d')
     req.user = user
-    // const cart = await user.getCart()
-
-    // req.cart = cart
 
     next()
   }

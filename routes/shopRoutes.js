@@ -4,12 +4,12 @@ import {
   getProduct,
   getProducts,
   getCart,
-  // getCheckout,
-  // getOrderDetail,
-  // getOrders,
+  getCheckout,
+  getOrderDetail,
+  getOrders,
   postCart,
   postCartDeleteProduct,
-  // postCheckout
+  postCheckout
 } from "../controller/shopController.js";
 
 
@@ -29,12 +29,12 @@ router.post('/cart', postCart);
 
 router.post('/cart-delete-item', postCartDeleteProduct);
 
-// router.get('/orders', getOrders);
+router.get('/orders', getOrders);
 
-// router.post('/create-order', postCheckout)
+router.post('/create-order', postCheckout)
 
-// router.get('/orders/:orderId', getOrderDetail);
+router.get('/orders/:orderId', getOrderDetail);
 
-// router.get('/checkout', getCheckout);
+router.get('/checkout', getCheckout);
 
 export default router

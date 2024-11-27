@@ -1,8 +1,8 @@
 <%- include('../includes/head.ejs') %>
 <link rel="stylesheet" href="/css/cart.css">
 </head>
-<!-- userOrders: [{orderId,totalPrice,createdAt,user}] -->
-
+<!-- userOrders: [{orderId,totalPrice,createdAt}] -->
+<!-- user: {name,email} -->
 
 <body>
     <%- include('../includes/navigation.ejs') %>
@@ -10,14 +10,17 @@
       <h1>Checkout Summary:</h1>
       <% if (userOrders.length > 0) { %>
       <div class="cart-container" id="cartContainer">
-        <% userOrders.forEach(order => { %>
+        <% userOrders.forEach((order,index) => { %>
           <div class="cart-item">
             <div>
-              <h4><%= order.orderId %></h4>
+              <h4><%= index+1 %></h4>
             </div>
-            <p>Created At: <%= order.createdAt %></p>
-            <p>Created By: <%= order.user.dataValues.name %></p>
-            <p>Total: $<%= order.totalPrice.toFixed(2) %></p>
+            <div>
+              <p><b>Created By: </b><%= user.name %></p>
+              <p><b>Email: </b> <%= user.email %></p>
+            </div>
+            <p><b>Created At: </b> <%= order.createdAt %></p>
+            <p><b>Total: </b> $<%= order.totalPrice.toFixed(2) %></p>
             <a class="btn" href="/orders/<%= order.orderId %>">Summary</a>
           </div>
           <% }) %>

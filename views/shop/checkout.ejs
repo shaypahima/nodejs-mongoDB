@@ -13,15 +13,15 @@
             <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
             <div>
                 <h4><%= product.title %></h4>
-                <p>Price: $<%= product.price.toFixed(2) %> x <%= product.cartItem.quantity %></p>
+                <p>Price: $<%= product.price.toFixed(2) %> x <%= product.quantity %></p>
             </div>
-            <p>$<%= (product.price * product.cartItem.quantity).toFixed(2) %></p>
+            <p>$<%= (product.price * product.quantity).toFixed(2) %></p>
           </div>
           <% }) %>
       </div>
       <div class="cart-summary">
           <p id="totalPrice">Total Price: $<%= 
-            products.reduce((acc,cur) => acc + cur.price * cur.cartItem.quantity ,0).toFixed(2)
+            products.reduce((acc,cur) => acc + cur.price * cur.quantity ,0).toFixed(2)
              %></p>
             <div>
               <div class="checkout-actions">
