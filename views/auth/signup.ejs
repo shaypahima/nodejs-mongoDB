@@ -1,0 +1,43 @@
+<%- include('../includes/head.ejs') %>
+<link rel="stylesheet" href="/css/forms.css">
+</head>
+
+<body>
+  <%- include('../includes/navigation.ejs') %>
+   <main>
+    <div class="product-form-container">
+      <h2>User Signup</h2>
+      <form id="productForm" action="/signup" method="POST">
+        
+        <label for="email">Email:</label>
+        <input type="text" name="email" id="email" required>
+
+        <div class="form-flex-row">
+          <p>
+            <label for="first-name">First Name:</label>
+            <input type="text" name="firstName" id="first-name" required>
+          </p>
+          <p>
+            <label for="last-name">Last Name:</label>
+            <input type="text" name="lastName" id="last-name" required>
+          </p>
+        </div>
+
+        <div class="form-flex-row">
+          <p>
+            <label for="password">Password:</label>
+            <input type="text" name="password" id="password"  required>
+          </p>
+          <p>
+            <label for="confirm-password">Confirm Password:</label>
+            <input type="text" name="confirmPassword" id="confirm-password" required>
+          </p>
+        </div>
+        
+        <button type="submit">Sign-Up</button>
+      </form>
+  </div>
+
+   </main>
+  <!-- <script src="/js/form.js"></script> -->
+  <%- include('../includes/end.ejs') %>

@@ -9,13 +9,15 @@
       <img src="<%= product.imageUrl %>" alt="<%= product.title %>" id="productImage" class="product-image">
       <h1 id="productTitle" class="product-title"><%= product.title %></h1>
       <p id="productDescription" class="product-description"><%= product.description %></p>
-      <p id="productPrice" class="product-price"><%= product.price %></p>
+      <p id="productPrice" class="product-price">$<%= product.price %></p>
       <div class="card-actions">
-        <%- include('../includes/post-req-btn.ejs', {  
-          payload: product.id,
-          action:"/cart",
-          button:"Add to Cart"
-        }) %>
+        <% if (isAuthenticated) { %>
+          <%- include('../includes/post-req-btn.ejs', {  
+            payload: product.id,
+            action:"/cart",
+            button:"Add to Cart"
+          }) %>
+        <% } %>
         <a href="/" class="btn">Back</a>
       </div>
   </div>

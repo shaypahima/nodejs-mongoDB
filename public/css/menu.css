@@ -737,3 +737,30 @@
     transform: translateY(0);
   }
 }
+
+.navigation-space-between{
+  width: 100%;
+  justify-content: space-between;
+}
+
+.btn-form { 
+  width: 7rem;
+  height: 62px;
+  background-color: rgba(192, 197, 206, 0.96);;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-decoration: none; 
+
+  }
+
+.btn-form:hover {
+  background-color: #4f5b66;
+}
+

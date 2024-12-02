@@ -5,7 +5,7 @@ import Product from "../model/product.js";
 export const getProducts = async (req, res, next) => {
   try {
 
-    const products = await Product.find({userId: req.user})
+    const products = await Product.find({ userId: req.user })
     products.forEach(prod => {
       prod.id = prod._id.toString()
     });
@@ -13,7 +13,8 @@ export const getProducts = async (req, res, next) => {
     res.render('admin/products', {
       prods: products,
       pageTitle: 'Admin Products',
-      path: '/admin/products'
+      path: '/admin/products',
+      isAuthenticated: req.user
     })
   } catch (error) {
     console.log(error);
@@ -25,7 +26,8 @@ export const getAddProduct = async (req, res) => {
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
-    editing: false
+    editing: false,
+    isAuthenticated: req.user
   });
 }
 
@@ -33,7 +35,7 @@ export const postAddProduct = async (req, res) => {
   try {
     const { title, imageUrl, price, description } = req.body
     await Product.create({
-      title, imageUrl, price, description, userId: req.user
+      title, imageUrl, price, description, userId: req.session.user
     })
 
     res.redirect('/')
@@ -58,7 +60,8 @@ export const getEditProduct = async (req, res) => {
       pageTitle: 'Edit Product',
       path: '/admin/edit-product',
       editing: editMode,
-      product
+      product,
+      isAuthenticated: req.user
     });
   } catch (error) {
     console.log(error);
@@ -92,7 +95,7 @@ export const postDeleteProduct = async (req, res) => {
 
     await req.user.deleteCartItem(productId)
     await Product.findByIdAndDelete(ProductObjId)
-    
+
     res.redirect('/')
 
   } catch (error) {

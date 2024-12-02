@@ -1,6 +1,7 @@
 import Product from "../model/product.js"
 
 
+
 export const getIndex = async (req, res) => {
 
   const products = await Product.find({})
@@ -11,7 +12,8 @@ export const getIndex = async (req, res) => {
   res.render('shop/index', {
     prods: products,
     pageTitle: 'Shop',
-    path: '/'
+    path: '/',
+    isAuthenticated: req.user
   })
 }
 
@@ -24,7 +26,8 @@ export const getProducts = async (req, res) => {
   res.render('shop/product-list', {
     prods: products,
     pageTitle: 'Products',
-    path: '/products'
+    path: '/products',
+    isAuthenticated: req.user
   })
 }
 
@@ -36,7 +39,8 @@ export const getProduct = async (req, res) => {
     res.render('shop/product-detail', {
       product: product,
       pageTitle: product.title,
-      path: '/products'
+      path: '/products',
+      isAuthenticated: req.user
     })
   } catch (error) {
     console.log(error);
@@ -45,12 +49,15 @@ export const getProduct = async (req, res) => {
 
 export const getCart = async (req, res) => {
   try {
+
+  
     const products = await req.user.getCartItems()
 
     res.render('shop/cart', {
       pageTitle: 'Shopping Cart',
       path: '/cart',
-      products
+      products,
+      isAuthenticated: req.user
     })
   } catch (error) {
     console.log(error);
@@ -71,7 +78,7 @@ export const postCart = async (req, res) => {
 export const postCartDeleteProduct = async (req, res) => {
   try {
     const { payload } = req.body;
-    console.log(req.body);
+
     await req.user.deleteCartItem(payload)
     res.redirect('/cart')
 
@@ -82,6 +89,7 @@ export const postCartDeleteProduct = async (req, res) => {
 
 export const getOrders = async (req, res) => {
   try {
+
     const userOrders = req.user.orders.map(order =>{
       const orderDetails = order.toObject()
       return {
@@ -95,7 +103,8 @@ export const getOrders = async (req, res) => {
       pageTitle: 'User Orders',
       path: '/orders',
       userOrders,
-      user: req.user
+      user: req.user,
+      isAuthenticated: req.user
     })
   } catch (error) {
     console.log(error);
@@ -111,7 +120,8 @@ export const getOrderDetail = async (req, res) => {
     res.render('shop/order-detail', {
       pageTitle: 'Order Details',
       path: '/order-detail',
-      order
+      order,
+      isAuthenticated: req.user
     })
   } catch (error) {
     console.log(error);
@@ -121,12 +131,14 @@ export const getOrderDetail = async (req, res) => {
 
 export const getCheckout = async (req, res) => {
   try {
+
     const products = await req.user.getCartItems()
 
     res.render('shop/checkout', {
       pageTitle: 'Checkout Summary',
       path: '/checkout',
-      products: products
+      products: products,
+      isAuthenticated: req.user
     })
   } catch (error) {
     console.log(error);
@@ -135,7 +147,8 @@ export const getCheckout = async (req, res) => {
 
 export const postCheckout = async (req, res) => {
   try {
-    req.user.addOrder()
+
+    await user.addOrder()
     res.redirect('/cart')
   } catch (error) {
     console.log(error);

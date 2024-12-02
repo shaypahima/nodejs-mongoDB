@@ -100,3 +100,14 @@ h1 {
 .add-to-cart:hover {
   background-color: #4f5b66;
 }
+
+.form-flex-row{
+  display: flex;
+  flex-direction: row;
+}
+
+.form-flex-row p{
+  width: 50%;
+  margin: 1rem;
+}
+

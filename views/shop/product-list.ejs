@@ -14,11 +14,13 @@
               <p class="product-price">$<%= product.price %></p>
               <div class="card-actions">
                 <a class="btn" href="/products/<%= product.id %>" class="btn">Details</a>
-                <%- include('../includes/post-req-btn.ejs', {  
-                  payload: product.id,
-                  action:"/cart",
-                  button:"Add to Cart"
-                }) %>
+                <% if (isAuthenticated) { %>
+                  <%- include('../includes/post-req-btn.ejs', {  
+                    payload: product.id,
+                    action:"/cart",
+                    button:"Add to Cart"
+                  }) %>
+                <% } %>
               </div>
             </div>
           <% } %>

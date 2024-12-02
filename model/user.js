@@ -13,8 +13,9 @@ const orderSchema = new Schema({
 })
 
 const userSchema = new Schema({
-  name: { type: String, required: true },
+  fullName: { type: String, required: true },
   email: { type: String, required: true },
+  password: { type: String, required: true },
   cart: {
     cartItems: [itemSchema]
   },
@@ -35,6 +36,7 @@ userSchema.methods.addOrder = async function () {
   })
 
   this.orders = [...this.orders, newOrder]
+  this.cart.cartItems = []
   return this.save()
 
 }
