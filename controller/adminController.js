@@ -14,7 +14,6 @@ export const getProducts = async (req, res, next) => {
       prods: products,
       pageTitle: 'Admin Products',
       path: '/admin/products',
-      isAuthenticated: req.user
     })
   } catch (error) {
     console.log(error);
@@ -27,7 +26,6 @@ export const getAddProduct = async (req, res) => {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
     editing: false,
-    isAuthenticated: req.user
   });
 }
 
@@ -61,7 +59,6 @@ export const getEditProduct = async (req, res) => {
       path: '/admin/edit-product',
       editing: editMode,
       product,
-      isAuthenticated: req.user
     });
   } catch (error) {
     console.log(error);

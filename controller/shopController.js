@@ -3,7 +3,6 @@ import Product from "../model/product.js"
 
 
 export const getIndex = async (req, res) => {
-
   const products = await Product.find({})
   products.forEach(prod => {
     prod.id = prod._id.toString()
@@ -13,7 +12,6 @@ export const getIndex = async (req, res) => {
     prods: products,
     pageTitle: 'Shop',
     path: '/',
-    isAuthenticated: req.user
   })
 }
 
@@ -27,7 +25,6 @@ export const getProducts = async (req, res) => {
     prods: products,
     pageTitle: 'Products',
     path: '/products',
-    isAuthenticated: req.user
   })
 }
 
@@ -40,7 +37,6 @@ export const getProduct = async (req, res) => {
       product: product,
       pageTitle: product.title,
       path: '/products',
-      isAuthenticated: req.user
     })
   } catch (error) {
     console.log(error);
@@ -57,7 +53,6 @@ export const getCart = async (req, res) => {
       pageTitle: 'Shopping Cart',
       path: '/cart',
       products,
-      isAuthenticated: req.user
     })
   } catch (error) {
     console.log(error);
@@ -104,7 +99,6 @@ export const getOrders = async (req, res) => {
       path: '/orders',
       userOrders,
       user: req.user,
-      isAuthenticated: req.user
     })
   } catch (error) {
     console.log(error);
@@ -121,7 +115,6 @@ export const getOrderDetail = async (req, res) => {
       pageTitle: 'Order Details',
       path: '/order-detail',
       order,
-      isAuthenticated: req.user
     })
   } catch (error) {
     console.log(error);
@@ -138,7 +131,6 @@ export const getCheckout = async (req, res) => {
       pageTitle: 'Checkout Summary',
       path: '/checkout',
       products: products,
-      isAuthenticated: req.user
     })
   } catch (error) {
     console.log(error);

@@ -11,6 +11,7 @@ import {
   postCartDeleteProduct,
   postCheckout
 } from "../controller/shopController.js";
+import { isAuth } from "../middleware/auth-middlewares.js";
 
 
 
@@ -23,18 +24,18 @@ router.get('/products', getProducts);
 
 router.get('/products/:productId', getProduct);
 
-router.get('/cart', getCart);
+router.get('/cart', isAuth, getCart);
 
-router.post('/cart', postCart);
+router.post('/cart', isAuth, postCart);
 
 router.post('/cart-delete-item', postCartDeleteProduct);
 
-router.get('/orders', getOrders);
+router.get('/orders', isAuth, getOrders);
 
 router.post('/create-order', postCheckout)
 
-router.get('/orders/:orderId', getOrderDetail);
+router.get('/orders/:orderId', isAuth, getOrderDetail);
 
-router.get('/checkout', getCheckout);
+router.get('/checkout', isAuth, getCheckout);
 
 export default router
