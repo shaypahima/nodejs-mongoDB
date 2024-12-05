@@ -4,11 +4,11 @@ import 'dotenv/config'
 
 import express from 'express';
 import session from 'express-session';
+import connectMongoDBSession from 'connect-mongodb-session';
 import bodyParser from 'body-parser';
+import flash from 'connect-flash'
 import csrf from 'csurf'
 
-import connectMongoDBSession from 'connect-mongodb-session';
-const MongoDBStore = connectMongoDBSession(session);
 import mongoose from 'mongoose';
 
 //routes
@@ -22,13 +22,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+const csrfProtection = csrf()
+
 //sessions will created at mongoDB 
+const MongoDBStore = connectMongoDBSession(session);
 const store = new MongoDBStore({
   uri: process.env.DATABASE_URI,
   collection: 'sessions'
 })
-const csrfProtection = csrf()
-
 //view
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -46,6 +48,8 @@ app.use(session({
   saveUninitialized: false,
   store
 }))
+
+app.use(flash())
 
 app.use(csrfProtection)
 

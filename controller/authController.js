@@ -1,18 +1,23 @@
 import User from "../model/user.js";
 
 import bcrypt from "bcryptjs";
+import { transporter, sender, recipients } from "../util/emailTransporter.js";
 
 export const getLogin = (req, res) => {
+  const feedback = req.flash('feedback')[0]
   res.render('auth/login', {
     pageTitle: 'Login',
     path: '/auth/login',
+    feedback
   });
 }
 
 export const getSignup = (req, res) => {
+  const feedback = req.flash('feedback')[0]
   res.render('auth/signup', {
     pageTitle: 'Sign-Up',
     path: '/auth/signup',
+    feedback
   });
 }
 
@@ -20,16 +25,18 @@ export const postSignup = async (req, res) => {
   const { email, firstName, lastName, password, confirmPassword } = req.body
   const fullName = `${firstName} ${lastName}`
   try {
-    const existingUser = await User.findOne({
-      email,
-      fullName
-    })
+    const existingUser = await User.findOne({ email })
 
     if (existingUser) {
-      console.log('User already exist!')
+      console.log('Email already taken!')
+      req.flash('feedback', 'Email already taken!')
       return res.redirect('/signup')
     }
-    if (confirmPassword !== password) { throw Error('Passwords are not identical!') }
+    if (confirmPassword !== password) {
+      console.log('Passwords are not identical!')
+      req.flash('feedback', 'Passwords are not identical!')
+      return res.redirect('/signup')
+    }
     const hashedPassword = await bcrypt.hash(password, 12)
     const newUser = await User.create({
       fullName,
@@ -41,6 +48,15 @@ export const postSignup = async (req, res) => {
       orders: [],
     })
     console.log('User created!');
+    const sendEmail = await transporter.sendMail({
+      from: sender,
+      to: recipients,
+      subject: "You are awesome!",
+      text: "Congrats for signing up to my website !",
+      category: "Integration Test",
+      sandbox: true
+    })
+    console.log(sendEmail);
     req.session.user = newUser
 
   } catch (error) {
@@ -58,6 +74,7 @@ export const postLogin = async (req, res) => {
 
     if (!existingUser) {
       console.log("User doesn't exist!")
+      req.flash('feedback', "User doesn't exist!")
       return res.redirect('/login')
     }
 
@@ -66,6 +83,7 @@ export const postLogin = async (req, res) => {
 
     if (!correctPassword) {
       console.log("Incorrect password!")
+      req.flash('feedback', 'Incorrect password!')
       return res.redirect('/login')
     }
 

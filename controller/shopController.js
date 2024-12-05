@@ -140,7 +140,7 @@ export const getCheckout = async (req, res) => {
 export const postCheckout = async (req, res) => {
   try {
 
-    await user.addOrder()
+    await req.user.addOrder()
     res.redirect('/cart')
   } catch (error) {
     console.log(error);

@@ -6,6 +6,9 @@
   <%- include('../includes/navigation.ejs') %>
    <main>
     <div class="product-form-container">
+      <% if (feedback) { %>
+       <p class="alert-message"><%= feedback %></p>
+      <% } %>
       <h2>User Signup</h2>
       <form id="productForm" action="/signup" method="POST">
         

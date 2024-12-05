@@ -42,6 +42,10 @@ h1 {
   background-color: #4f5b66;
 }
 
+.product-form-container a {
+  margin-left: 10px;
+}
+
 .product-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -109,5 +113,9 @@ h1 {
 .form-flex-row p{
   width: 50%;
   margin: 1rem;
+}
+
+.alert-message{
+  color: rgb(168, 20, 20);
 }
 

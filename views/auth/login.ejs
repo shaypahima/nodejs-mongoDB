@@ -6,6 +6,9 @@
   <%- include('../includes/navigation.ejs') %>
    <main>
     <div class="product-form-container">
+      <% if (feedback) { %>
+        <p class="alert-message"><%= feedback %></p>
+       <% } %>
       <h2>User Login</h2>
       <form id="productForm" action="/login" method="POST">
 
@@ -17,6 +20,7 @@
           
         <input type="hidden" name="_csrf" value=<%= csrfToken %> >
         <button type="submit">Login</button>
+        <a href="/forgot-password">forgot your password?</a>
       </form>
   </div>
 
