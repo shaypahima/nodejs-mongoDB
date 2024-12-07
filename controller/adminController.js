@@ -87,11 +87,9 @@ export const postEditProduct = async (req, res) => {
 
 export const postDeleteProduct = async (req, res) => {
   try {
-    const { payload: productId } = req.body
-    const ProductObjId = ObjectId.createFromHexString(productId)
-
+    const { product , productId } = req
     await req.user.deleteCartItem(productId)
-    await Product.findByIdAndDelete(ProductObjId)
+    await product.deleteOne()
 
     res.redirect('/')
 

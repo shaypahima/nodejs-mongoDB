@@ -98,14 +98,11 @@ userSchema.methods.deleteCartItem = function (productId) {
   return this.save()
 }
 
-userSchema.methods.getResetPassKey = async function () {
-
-}
 
 userSchema.methods.setResetToken = async function () {
   try {
     const token = await getResetKey(32)
-
+    
     this.resetPassKey = token
     await this.save()
     return token
