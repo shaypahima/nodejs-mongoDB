@@ -1,5 +1,7 @@
 import { model, Schema, Types } from "mongoose";
 
+import getResetKey from "../util/create-reset-key.js";
+
 const itemSchema = new Schema({
   productId: { type: Types.ObjectId, ref: 'Product', required: true },
   quantity: { type: Number, required: true }
@@ -19,7 +21,8 @@ const userSchema = new Schema({
   cart: {
     cartItems: [itemSchema]
   },
-  orders: [orderSchema]
+  orders: [orderSchema],
+  resetPassKey: { type: String }
 })
 
 userSchema.methods.addOrder = async function () {
@@ -44,18 +47,18 @@ userSchema.methods.addOrder = async function () {
 
 userSchema.methods.getOrderById = async function (orderId) {
   const orderIndex = this.orders
-  .findIndex(item => item._id.toString() === orderId)
-  
-  await this.populate("orders."+orderIndex+".orderItems.productId")
+    .findIndex(item => item._id.toString() === orderId)
+
+  await this.populate("orders." + orderIndex + ".orderItems.productId")
 
   const orderItems = this.orders[orderIndex].orderItems.map(product => {
-    const {title,description,imageUrl,price} = product.productId.toObject()
-    return {title,description,imageUrl,price, quantity:product.quantity}
+    const { title, description, imageUrl, price } = product.productId.toObject()
+    return { title, description, imageUrl, price, quantity: product.quantity }
   })
-  const {totalPrice,createdAt: dateObj} = this.orders[orderIndex];
+  const { totalPrice, createdAt: dateObj } = this.orders[orderIndex];
   const createdAt = dateObj.toLocaleDateString()
   return {
-    orderItems,totalPrice,createdAt
+    orderItems, totalPrice, createdAt
   }
 }
 
@@ -94,6 +97,23 @@ userSchema.methods.deleteCartItem = function (productId) {
   this.cart.cartItems = updatedCartItems
   return this.save()
 }
+
+userSchema.methods.getResetPassKey = async function () {
+
+}
+
+userSchema.methods.setResetToken = async function () {
+  try {
+    const token = await getResetKey(32)
+
+    this.resetPassKey = token
+    await this.save()
+    return token
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 
 const User = model('User', userSchema)
 

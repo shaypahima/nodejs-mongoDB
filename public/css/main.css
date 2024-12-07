@@ -86,3 +86,7 @@ main {
 .card-actions > *{
   margin: 1rem 1rem;
 }
+
+.center{
+  text-align: center;
+}

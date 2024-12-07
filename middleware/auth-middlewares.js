@@ -18,3 +18,14 @@ export const getConnectedUser = async (req, res, next) => {
     console.log(error);
   }
 }
+
+export const getResetPassUser = async (req, res, next) => {
+  try {
+    if (!req.session.resetPassUser) return next()
+    req.resetPassUser = await User.findById(req.session.resetPassUser._id)
+    next()
+
+  } catch (error) {
+    console.log(error);
+  }
+}
